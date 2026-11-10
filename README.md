@@ -42,7 +42,8 @@ time a save loads.
 |-----------------|-------------------|--------------------------------------------------------------------|
 | Show on         | Storage buildings | or *Every building with storage* (generators, Electrolyzers, fabricators...) |
 | Max item lines  | 6                 | item types listed per building                                     |
-| Show "Empty"    | On                | storage buildings with nothing inside say so                       |
+| Show "Empty"    | Off               | storage buildings with nothing inside say so                       |
+| Item text color | A8B0BC            | stored-item line color (`RRGGBB` or `#RRGGBB`)                    |
 
 "Storage buildings" means buildings with one of these components: `StorageLocker`,
 `StorageLockerSmart`, `Refrigerator`, `RationBox`, `Reservoir`, `SmartReservoir`,
@@ -53,7 +54,7 @@ use one of these components.
 ## Build in Visual Studio (Windows)
 
 Same setup as Smart Power Management: `netstandard2.1`, paths in `Directory.Build.props`,
-installs to `mods\Local\DEV_StoringWhat`, PLib merged in with ILRepack.
+installs to `mods\Local\StoringWhat`, PLib merged in with ILRepack.
 
 1. Check `GameFolder` (and `ModFolder` if Documents is in OneDrive) in **`Directory.Build.props`**.
 2. Open **`StoringWhat.sln`** in Visual Studio 2022 and **Build → Rebuild Solution**.

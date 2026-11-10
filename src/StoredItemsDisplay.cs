@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using HarmonyLib;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace StoringWhat
     /// </summary>
     public sealed class StoredItemsDisplay : KMonoBehaviour, ISim200ms
     {
-        private const string Prefix = "StoringWhat_";
+        private const string Prefix = "zzzz_StoringWhat_";
 
         // ------------------------------------------------------------------ attaching
 
@@ -132,7 +133,28 @@ namespace StoringWhat
 
         internal static string FormatLine(string name, AmountKind kind, float amount)
         {
-            return name + ": " + FormatAmount(kind, amount);
+            string color = NormalizeColor(StoringWhatOptions.Current.ItemTextColor);
+            return "<color=#" + color + ">" + name + ": " + FormatAmount(kind, amount) + "</color>";
+        }
+
+        private static string NormalizeColor(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "A8B0BC";
+            string s = raw.Trim();
+            if (s.Length > 0 && s[0] == '#') s = s.Substring(1);
+
+            var hex = new StringBuilder(s.Length);
+            for (int i = 0; i < s.Length; i++)
+            {
+                char c = s[i];
+                bool ok = (c >= '0' && c <= '9') ||
+                    (c >= 'a' && c <= 'f') ||
+                    (c >= 'A' && c <= 'F');
+                if (ok) hex.Append(c);
+            }
+
+            if (hex.Length != 6 && hex.Length != 8) return "A8B0BC";
+            return hex.ToString().ToUpperInvariant();
         }
 
         // ------------------------------------------------------------------ per building

@@ -32,11 +32,16 @@ namespace StoringWhat
         [JsonProperty]
         public bool ShowEmpty { get; set; }
 
+        [Option("Item text color", "Hex color for stored-item lines (RRGGBB or #RRGGBB).")]
+        [JsonProperty]
+        public string ItemTextColor { get; set; }
+
         public StoringWhatOptions()
         {
             Scope = BuildingScope.StorageBuildings;
             MaxLines = 6;
-            ShowEmpty = true;
+            ShowEmpty = false;
+            ItemTextColor = "A8B0BC";
         }
 
         private static StoringWhatOptions current;
