@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Visual Studio 2022: open StoringWhat.sln, Build > Rebuild Solution.
+    Paths: Directory.Build.props (GameFolder / ModFolder).
+    Output: <ModFolder>\DEV_StoringWhat\ (StoringWhat.dll with PLib merged in, mod.yaml, mod_info.yaml)
+    NuGet packages (PLib, ILRepack) restore automatically on the first build.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>StoringWhat</AssemblyName>
+    <RootNamespace>StoringWhat</RootNamespace>
+    <Version>1.0.0</Version>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies> <!-- puts PLib.dll next to the build for merging -->
+    <InstallFolder>$(ModFolder)\DEV_StoringWhat</InstallFolder>
+  </PropertyGroup>
+
+  <!-- Game references (never copied to output) -->
+  <ItemDefinitionGroup>
+    <Reference><Private>False</Private></Reference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp" HintPath="$(GameFolder)\Assembly-CSharp.dll" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="$(GameFolder)\Assembly-CSharp-firstpass.dll" />
+    <Reference Include="0Harmony" HintPath="$(GameFolder)\0Harmony.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(GameFolder)\Newtonsoft.Json.dll" />
+    <Reference Include="Unity.TextMeshPro" HintPath="$(GameFolder)\Unity.TextMeshPro.dll" />
+    <Reference Include="UnityEngine" HintPath="$(GameFolder)\UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(GameFolder)\UnityEngine.CoreModule.dll" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(GameFolder)\UnityEngine.InputLegacyModule.dll" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameFolder)\UnityEngine.TextRenderingModule.dll" />
+    <Reference Include="UnityEngine.UI" HintPath="$(GameFolder)\UnityEngine.UI.dll" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(GameFolder)\UnityEngine.UIModule.dll" />
+  </ItemGroup>
+
+  <!-- PLib: Options button / config.json. Merged into StoringWhat.dll (Directory.Build.targets). -->
+  <ItemGroup>
+    <PackageReference Include="PLib" Version="4.25.0" />
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="*" PrivateAssets="all" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="mod.yaml;mod_info.yaml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- One readable error instead of hundreds of "type not found" errors -->
+  <Target Name="CheckGamePath" BeforeTargets="ResolveAssemblyReferences;BeforeBuild">
+    <Error Condition="!Exists('$(GameFolder)\Assembly-CSharp.dll')"
+           Text="Oxygen Not Included DLLs not found in '$(GameFolder)'. Set GameFolder in Directory.Build.props to your game's OxygenNotIncluded_Data\Managed folder, then reload the solution." />
+  </Target>
+
+  <!-- Copy the merged mod into the game's local mods folder (keeps an existing config.json) -->
+  <Target Name="InstallMod" AfterTargets="ILRepack">
+    <MakeDir Directories="$(InstallFolder)" />
+    <Copy SourceFiles="$(TargetPath);mod.yaml;mod_info.yaml" DestinationFolder="$(InstallFolder)" />
+    <Message Importance="high" Text="StoringWhat installed to $(InstallFolder)" />
+  </Target>
+
+</Project>

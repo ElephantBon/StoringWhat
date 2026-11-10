@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!--
+    Merge PLib.dll into StoringWhat.dll.
+    This file is imported after NuGet's targets, so this "ILRepack" target replaces the package's default one.
+    Only PLib is merged: merging every DLL in the output pulls in build tools and breaks loading in game.
+  -->
+  <Target Name="ILRepack" AfterTargets="Build">
+    <ItemGroup>
+      <InputAssemblies Include="$(TargetPath)" />
+      <InputAssemblies Include="$(TargetDir)PLib.dll" Condition="Exists('$(TargetDir)PLib.dll')" />
+    </ItemGroup>
+    <Error Condition="!Exists('$(TargetDir)PLib.dll')"
+           Text="PLib.dll was not restored. Right-click the solution > Restore NuGet Packages, then Rebuild." />
+    <ILRepack
+      TargetPlatformVersion="v4"
+      TargetKind="SameAsPrimaryAssembly"
+      OutputFile="$(TargetPath)"
+      InputAssemblies="@(InputAssemblies)"
+      Wildcards="true"
+      LibraryPath="$(GameFolder)"
+      Parallel="true" />
+  </Target>
+</Project>

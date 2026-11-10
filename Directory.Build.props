@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <!-- CHANGE THIS if needed: the folder Steam opens via "Browse local files", plus \OxygenNotIncluded_Data\Managed -->
+    <GameFolder>D:\SteamLibrary\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</GameFolder>
+
+    <!-- Where the built mod is installed. If your Documents folder is in OneDrive, use
+         $(UserProfile)\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local instead. -->
+    <ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\Local</ModFolder>
+  </PropertyGroup>
+</Project>
